@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matrix Code Rain</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        // 设置全屏画布[2,7](@ref)
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 矩阵字符集[2,4](@ref)
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        const fontSize = 20;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(0);
+
+        // 颜色梯度设置[3,4](@ref)
+        const colors = ['#0F0', '#0C0', '#090', '#060'];
+        
+        // 绘制函数
+        function draw() {
+            // 添加半透明层制造拖影效果[4,8](@ref)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制字符
+            ctx.font = fontSize + 'px monospace';
+            
+            drops.forEach((drop, i) => {
+                // 随机生成字符
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                
+                // 设置颜色梯度[4](@ref)
+                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 绘制字符
+                ctx.fillText(char, i * fontSize, drop * fontSize);
+
+                // 重置位置
+                if (drop * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        // 启动动画[8](@ref)
+        draw();
+
+        // 添加键盘事件（ESC退出）[3](@ref)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.close();
+            }
+        });
+    </script>
+</body>
+</html>
